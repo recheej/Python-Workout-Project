@@ -32,8 +32,7 @@ class LoginWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.label_validation.setText("No records matching that username and password")
 
             return
-
-
+        
         user_id = results[0][0]
         self.openMainpage(user_id)
 
