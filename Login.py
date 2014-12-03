@@ -33,10 +33,12 @@ class LoginWindow(QtGui.QMainWindow, Ui_MainWindow):
 
             return
 
-        self.openMainpage()
 
-    def openMainpage(self):
-        self.win = mainPage()
+        user_id = results[0][0]
+        self.openMainpage(user_id)
+
+    def openMainpage(self, user_id):
+        self.win = mainPage(user_id=user_id)
         self.close()
         self.win.show()
 

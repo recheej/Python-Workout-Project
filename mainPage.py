@@ -5,7 +5,7 @@ from StatsPage import StatsWindow
 from Start import StartWindow
 
 class mainPage(QtGui.QWidget, mainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, user_id=None):
         #super(mainPage, self).__init__(parent)
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -15,9 +15,11 @@ class mainPage(QtGui.QWidget, mainWindow):
         self.winS = None
         self.winC = None
         self.winP = None
+        self.user_id = user_id
+
     def openCreate(self):
         if self.winC is None:
-            self.winC = CreatePlanWindow()
+            self.winC = CreatePlanWindow(user_id=self.user_id)
             self.winC.show()
         else:
             self.winC.show()

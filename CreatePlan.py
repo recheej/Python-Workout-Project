@@ -3,13 +3,15 @@ from CreatePlanUI import Ui_CreatePlan
 from workout_info import WorkoutInfo
 import database
 
+
 class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
-     def __init__(self, parent=None):
+     def __init__(self, parent=None, user_id=None):
         #super(LoginWindow, self).__init__(parent)
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.radioButtonPlan.clicked.connect(self.EnableCheckBoxes)
         self.pushButtonSubmit.clicked.connect(self.create_plan_clicked)
+        self.user_id = user_id
 
      def EnableCheckBoxes(self):
          self.checkBoxChest.setEnabled(True)
@@ -37,7 +39,7 @@ class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
      def create_workout(self, d, g):
 
         new_workout = WorkoutInfo()
-        new_workout.user_id = self.id
+        new_workout.user_id = self.user_id
         new_workout.day = d
         new_workout.muscle_group = g
         new_workout.exercise = "temp"
