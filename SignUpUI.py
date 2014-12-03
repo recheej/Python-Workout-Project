@@ -1,0 +1,151 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'SignUpPage.ui'
+#
+# Created: Sat Nov 29 17:58:35 2014
+#      by: PyQt4 UI code generator 4.11.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
+
+class Ui_SignUp(object):
+    def setupUi(self, Form):
+        Form.setObjectName(_fromUtf8("Form"))
+        Form.resize(592, 519)
+        self.layoutWidget = QtGui.QWidget(Form)
+        self.layoutWidget.setGeometry(QtCore.QRect(110, 130, 351, 243))
+        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        self.verticalLayout_3 = QtGui.QVBoxLayout(self.layoutWidget)
+        self.verticalLayout_3.setMargin(0)
+        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.label_5 = QtGui.QLabel(self.layoutWidget)
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.verticalLayout_3.addWidget(self.label_5)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.label = QtGui.QLabel(self.layoutWidget)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.verticalLayout_2.addWidget(self.label)
+        self.label_2 = QtGui.QLabel(self.layoutWidget)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.verticalLayout_2.addWidget(self.label_2)
+        self.label_6 = QtGui.QLabel(self.layoutWidget)
+        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.verticalLayout_2.addWidget(self.label_6)
+        self.label_7 = QtGui.QLabel(self.layoutWidget)
+        self.label_7.setObjectName(_fromUtf8("label_7"))
+        self.verticalLayout_2.addWidget(self.label_7)
+        self.label_3 = QtGui.QLabel(self.layoutWidget)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.verticalLayout_2.addWidget(self.label_3)
+        self.label_4 = QtGui.QLabel(self.layoutWidget)
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.verticalLayout_2.addWidget(self.label_4)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout_5 = QtGui.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
+        self.lineEditName = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditName.setObjectName(_fromUtf8("lineEditName"))
+        self.horizontalLayout_5.addWidget(self.lineEditName)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem1)
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_6 = QtGui.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
+        self.lineEditLastName = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditLastName.setObjectName(_fromUtf8("lineEditLastName"))
+        self.horizontalLayout_6.addWidget(self.lineEditLastName)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addItem(spacerItem2)
+        self.verticalLayout.addLayout(self.horizontalLayout_6)
+        self.horizontalLayout_4 = QtGui.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
+        self.lineEditUsername = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditUsername.setObjectName(_fromUtf8("lineEditUsername"))
+        self.horizontalLayout_4.addWidget(self.lineEditUsername)
+        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem3)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_7 = QtGui.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        self.lineEditPassword = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditPassword.setObjectName(_fromUtf8("lineEditPassword"))
+        self.horizontalLayout_7.addWidget(self.lineEditPassword)
+        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem4)
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
+        self.horizontalLayout_8 = QtGui.QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(_fromUtf8("horizontalLayout_8"))
+        self.lineEditAge = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditAge.setObjectName(_fromUtf8("lineEditAge"))
+        self.horizontalLayout_8.addWidget(self.lineEditAge)
+        spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_8.addItem(spacerItem5)
+        self.verticalLayout.addLayout(self.horizontalLayout_8)
+        self.horizontalLayout_9 = QtGui.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName(_fromUtf8("horizontalLayout_9"))
+        self.lineEditWeight = QtGui.QLineEdit(self.layoutWidget)
+        self.lineEditWeight.setObjectName(_fromUtf8("lineEditWeight"))
+        self.horizontalLayout_9.addWidget(self.lineEditWeight)
+        spacerItem6 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem6)
+        self.verticalLayout.addLayout(self.horizontalLayout_9)
+        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.verticalLayout_4 = QtGui.QVBoxLayout()
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
+        self.horizontalLayout.addLayout(self.verticalLayout_4)
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        spacerItem7 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem7)
+        self.pushButtonSignUp = QtGui.QPushButton(self.layoutWidget)
+        self.pushButtonSignUp.setObjectName(_fromUtf8("pushButtonSignUp"))
+        self.horizontalLayout_2.addWidget(self.pushButtonSignUp)
+        self.pushButtonCancel = QtGui.QPushButton(self.layoutWidget)
+        self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
+        self.horizontalLayout_2.addWidget(self.pushButtonCancel)
+        spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem8)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_2)
+        self.label_validation = QtGui.QLabel(self.layoutWidget)
+        self.label_validation.setText(_fromUtf8(""))
+        self.label_validation.setObjectName(_fromUtf8("label_validation"))
+        self.verticalLayout_3.addWidget(self.label_validation)
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(_translate("Form", "Form", None))
+        self.label_5.setText(_translate("Form", "Please Enter Information Below: ", None))
+        self.label.setText(_translate("Form", "First Name:", None))
+        self.label_2.setText(_translate("Form", "Last Name:", None))
+        self.label_6.setText(_translate("Form", "Username:", None))
+        self.label_7.setText(_translate("Form", "Password:", None))
+        self.label_3.setText(_translate("Form", "Age:", None))
+        self.label_4.setText(_translate("Form", "Weight:", None))
+        self.pushButtonSignUp.setText(_translate("Form", "Sign Up!", None))
+        self.pushButtonCancel.setText(_translate("Form", "Cancel", None))
+
