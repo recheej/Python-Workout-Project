@@ -9,7 +9,7 @@ class SignUpWindow(QtGui.QWidget, Ui_SignUp):
 
     def __init__(self, parent=None):
         #super(LoginWindow, self).__init__(parent)
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self)
         self.setupUi(self)
         self.pushButtonSignUp.clicked.connect(self.sign_up_clicked)
         self.pushButtonCancel.clicked.connect(self.cancel_clicked)
@@ -22,6 +22,9 @@ class SignUpWindow(QtGui.QWidget, Ui_SignUp):
         self.line_edits.append(self.lineEditWeight)
         self.line_edits.append(self.lineEditUsername)
         self.line_edits.append(self.lineEditPassword)
+
+        if parent:
+            self.login_page = parent
 
     def cancel_clicked(self):
         self.close()
@@ -51,3 +54,7 @@ class SignUpWindow(QtGui.QWidget, Ui_SignUp):
                 if "Duplicate entry" in error.args[1]:
                     #If we have a duplicate entry
                     self.label_validation.setText("Sorry that username is already taken.")
+        else:
+            #If we successfully signed up we should set a message on log in page
+            self.login_page.label_validation.setText("Successfully signed up. You may log in.")
+            self.close()

@@ -29,7 +29,7 @@ class LoginWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         if len(results) == 0:
 
-            self.label_validation.setText("No records matching that username and password")
+            self.label_validation.setText("No user found.")
 
             return
         
@@ -42,5 +42,5 @@ class LoginWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.win.show()
 
     def openSignUp(self):
-        self.win = SignUpWindow()
+        self.win = SignUpWindow(self)
         self.win.show()
