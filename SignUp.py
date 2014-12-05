@@ -14,15 +14,6 @@ class SignUpWindow(QtGui.QWidget, Ui_SignUp):
         self.pushButtonSignUp.clicked.connect(self.sign_up_clicked)
         self.pushButtonCancel.clicked.connect(self.cancel_clicked)
 
-        self.line_edits = []
-        self.line_edits.append(self.lineEditPassword)
-        self.line_edits.append(self.lineEditName)
-        self.line_edits.append(self.lineEditLastName)
-        self.line_edits.append(self.lineEditAge)
-        self.line_edits.append(self.lineEditWeight)
-        self.line_edits.append(self.lineEditUsername)
-        self.line_edits.append(self.lineEditPassword)
-
         if parent:
             self.login_page = parent
 
@@ -31,8 +22,10 @@ class SignUpWindow(QtGui.QWidget, Ui_SignUp):
 
     def sign_up_clicked(self):
 
+        line_edits = self.findChildren(QtGui.QLineEdit)
+
         self.label_validation.setText("")
-        for line_edit in self.line_edits:
+        for line_edit in line_edits:
             if line_edit.text() == "":
                 self.label_validation.setText("All fields required.")
                 return
