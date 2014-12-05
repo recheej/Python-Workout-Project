@@ -76,21 +76,54 @@ def insert(sql_statement):
 
         return e
 
+def delete(sql_statement):
+
+    db = db_instance()
+    cursor = db.cursor()
+
+    try:
+
+        cursor.execute(sql_statement)
+
+        db.commit()
+
+        cursor.close()
+
+        db.close()
+
+        return True
+
+    except MySQLdb.Error as e:
+
+        cursor.close()
+        db.close()
+
+        print e
+        return e
+
+
+
 
 def insert_user(user):
 
-    sql_statement = "insert into User (Last_Name, First_Name, Age, Weight, Gender, User_Name, Password) values " + \
-        "('%s', '%s', '%d', '%d', '%s', '%s', '%s')" % (user.last_name,
-        user.first_name, user.age, user.weight, user.gender, user.user_name, user.password)
+    sql_statement = "insert into User (Last_Name, First_Name, Age, Weight, Gender, User_Name, Password, Count) values " + \
+        "('%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d')" % (user.last_name,
+        user.first_name, user.age, user.weight, user.gender, user.user_name, user.password, user.count)
 
     return insert(sql_statement)
 
 
 def insert_workout(workout_info):
 
-    sql_statement = "insert into Workout_Info (User_ID, Muscle_Group, Exercise, Sets, Reps, Goal_Sets, Goal_Reps, Weight, Day) " + \
-        "values ('%d', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d')" % (workout_info.user_id,
-        workout_info.muscle_group, workout_info.exercise, workout_info.sets, workout_info.reps, workout_info.goal_sets,
-        workout_info.goal_reps, workout_info.weights, workout_info.day)
+    sql_statement = "insert into Workout_Info (User_ID, Muscle_Group, Exercise, Day) " + \
+        "values (%d, '%s', '%s', %d)" % (workout_info.user_id,
+        workout_info.muscle_group, workout_info.exercise, workout_info.day)
 
-    insert(sql_statement)
+    return insert(sql_statement)
+
+
+def delete_workout(user_id):
+
+    sql_statement = "delete from Workout_Info where User_ID = %d" % (user_id)
+
+    return delete(sql_statement)

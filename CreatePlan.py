@@ -2,6 +2,7 @@ from PyQt4 import QtGui
 from CreatePlanUI import Ui_CreatePlan
 from workout_info import WorkoutInfo
 import database
+import random
 
 
 class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
@@ -12,6 +13,14 @@ class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
         self.radioButtonPlan.clicked.connect(self.EnableCheckBoxes)
         self.pushButtonSubmit.clicked.connect(self.create_plan_clicked)
         self.user_id = user_id
+        self.exercise_dict = {'Chest': ['Incline Bench Press (Barbell)', 'Flat Bench Press (Barbell)'],
+         'Back':['Lat Pull Down', 'Seated Cable Row'],
+         'Bicep':['Hammer Curls', 'Preacher Curl'],
+         'Tricep':['Kick Backs','Dips'],
+         'Legs':['Squats', 'Leg Press'],
+         'Core(abs)':['Heel Touches', 'Leg Raises'],
+         'Shoulders':['Military Press (Dumbbell)', 'Rear Deltoid Flyes']}
+        random.seed()
 
      def EnableCheckBoxes(self):
          self.checkBoxChest.setEnabled(True)
@@ -42,10 +51,10 @@ class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
         new_workout.user_id = self.user_id
         new_workout.day = d
         new_workout.muscle_group = g
-        new_workout.exercise = "temp"
-        new_workout.sets = 1
+        new_workout.exercise = self.exercise_dict[g][random.randint(0, len(self.exercise_dict[g])-1)]
+        new_workout.sets = 3
         new_workout.reps = 1
-        new_workout.goal_sets = 1
+        new_workout.goal_sets = 3
         new_workout.goal_reps = 1
         new_workout.weights = 1
 
@@ -53,6 +62,7 @@ class CreatePlanWindow(QtGui.QWidget, Ui_CreatePlan):
          
      def create_plan_clicked(self):
 
+        database.delete_workout(self.user_id)
         if self.checkBoxChest.isChecked():
             self.create_workout(1, "Chest")
         if self.checkBoxChest_2.isChecked():
