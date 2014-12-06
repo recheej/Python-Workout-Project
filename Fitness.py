@@ -2,6 +2,7 @@ from FitnessUI import Ui_PyFitness
 from PyQt4 import QtCore, QtGui
 from user import User
 from workout_info import WorkoutInfo
+from workout_session import WorkoutSession
 import os,sys
 import database
 import MySQLdb
@@ -196,49 +197,33 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          
     def create_plan_clicked(self):
 
-        database.delete_workout(self.user_id)
-        if self.checkBoxChest.isChecked():
-            self.create_workout(1, "Chest")
-        if self.checkBoxChest_2.isChecked():
-            self.create_workout(2, "Chest")
-        if self.checkBoxChest_3.isChecked():
-            self.create_workout(3, "Chest")
-        if self.checkBoxBack.isChecked():
-            self.create_workout(1, "Back")
-        if self.checkBoxBack_2.isChecked():
-            self.create_workout(2, "Back")
-        if self.checkBoxBack_3.isChecked():
-            self.create_workout(3, "Back")
-        if self.checkBoxBiscep.isChecked():
-            self.create_workout(1, "Bicep")
-        if self.checkBoxBiscep_2.isChecked():
-            self.create_workout(2, "Bicep")
-        if self.checkBoxBiscep_3.isChecked():
-            self.create_workout(3, "Bicep")
-        if self.checkTricep.isChecked():
-            self.create_workout(1, "Tricep")
-        if self.checkTricep_2.isChecked():
-            self.create_workout(2, "Tricep")
-        if self.checkTricep_3.isChecked():
-            self.create_workout(3, "Tricep")
-        if self.checkBoxLegs.isChecked():
-            self.create_workout(1, "Legs")
-        if self.checkBoxLegs_2.isChecked():
-            self.create_workout(2, "Legs")
-        if self.checkBoxLegs_3.isChecked():
-            self.create_workout(3, "Legs")
-        if self.checkBoxCore.isChecked():
-            self.create_workout(1, "Core(abs)")
-        if self.checkBoxCore_2.isChecked():
-            self.create_workout(2, "Core(abs)")
-        if self.checkBoxCore_3.isChecked():
-            self.create_workout(3, "Core(abs)")
-        if self.checkBoxShoulders.isChecked():
-            self.create_workout(1, "Shoulders")
-        if self.checkBoxShoulders_2.isChecked():
-            self.create_workout(2, "Shoulders")
-        if self.checkBoxShoulders_3.isChecked():
-            self.create_workout(3, "Shoulders")
+        workouts = database.get_workouts(self.user_id, 1, 1)
+
+        checkboxes = self.findChildren(QtGui.QCheckBox)
+
+        counter = 0
+        for i in range(0, 3):
+
+            day_checkboxes = checkboxes[counter: counter + 7]
+
+            workout_counter = 0
+            for checkbox in day_checkboxes:
+
+                if checkbox.isChecked():
+
+                    workout_counter += 1
+
+                    workout_session = WorkoutSession()
+
+                    workout_session.workout_number = workout_counter
+                    workout_session.day_number = i + 1
+                    workout_session.user_id = self.user_id
+                    workout_session.muscle_group = str(checkbox.text())
+
+                    database.insert_workout_session(workout_session)
+
+            counter += 7
+
         self.stackedWidget.setCurrentIndex(2)
         self.DisableCheckBoxes()
             
