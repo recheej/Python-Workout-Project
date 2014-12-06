@@ -1,12 +1,9 @@
 from PyQt4 import QtGui
-import mainPage
-import Login
+import Fitness
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
-    window = Login.LoginWindow()
-
-
-    #more testing
+    window = Fitness.FitnessApp()
+    
     window.show()
     app.exec_()

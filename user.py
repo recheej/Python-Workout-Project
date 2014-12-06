@@ -14,4 +14,4 @@ class User(object):
         self.gender = "M"
         self.user_name = ""
         self.password = ""
-        self.count = 0
+        self.count = 1
