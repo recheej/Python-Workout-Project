@@ -223,7 +223,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                     workout_session.muscle_group = muscle_group
 
                     exercises = self.exercise_dict[muscle_group]
-                    random_exercise = exercises[random.randint(0, len(exercises))]
+                    random_exercise = exercises[random.randint(0, len(exercises) - 1)]
                     workout_session.exercise = random_exercise
 
                     database.insert_workout_session(workout_session)
