@@ -218,7 +218,13 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                     workout_session.workout_number = workout_counter
                     workout_session.day_number = i + 1
                     workout_session.user_id = self.user_id
-                    workout_session.muscle_group = str(checkbox.text())
+
+                    muscle_group = str(checkbox.text())
+                    workout_session.muscle_group = muscle_group
+
+                    exercises = self.exercise_dict[muscle_group]
+                    random_exercise = exercises[random.randint(0, len(exercises))]
+                    workout_session.exercise = random_exercise
 
                     database.insert_workout_session(workout_session)
 
