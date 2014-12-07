@@ -220,6 +220,10 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                     workout_session.user_id = self.user_id
 
                     muscle_group = str(checkbox.text())
+
+                    if muscle_group == "Biscep":
+                        muscle_group = "Bicep"
+
                     workout_session.muscle_group = muscle_group
 
                     exercises = self.exercise_dict[muscle_group]
