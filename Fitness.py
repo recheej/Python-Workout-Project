@@ -200,6 +200,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         workouts = database.get_workouts(self.user_id, 1, 1)
 
         checkboxes = self.findChildren(QtGui.QCheckBox)
+        checkboxes.reverse()
 
         counter = 0
         for i in range(0, 3):
