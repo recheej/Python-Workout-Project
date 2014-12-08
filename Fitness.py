@@ -244,8 +244,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          self.checkBoxShoulders_2.setCheckState(QtCore.Qt.Unchecked)
          self.checkBoxShoulders_3.setCheckState(QtCore.Qt.Unchecked)
          self.radioButtonPlan.setChecked(False)
-         
-         
+
 
     def EnableCheckBoxes(self):
          self.checkBoxChest.setEnabled(True)
@@ -272,44 +271,58 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          
     def create_plan_clicked(self):
 
-        sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
-        database.update(sql_statement)
-        database.delete_workout(self.user_id)
-        checkboxes = self.findChildren(QtGui.QCheckBox)
-        checkboxes.reverse()
+        all_checkboxes = self.findChildren(QtGui.QCheckBox)
+        all_checkboxes.reverse()
 
+        checkboxes = []
         counter = 0
+
+        #Go through and make sure there are 3 checked boxes for each day
         for i in range(0, 3):
 
-            day_checkboxes = checkboxes[counter: counter + 7]
+            day_checkboxes = all_checkboxes[counter: counter + 7]
 
-            workout_counter = 0
+            checked_checkboxes = []
             for checkbox in day_checkboxes:
 
                 if checkbox.isChecked():
 
-                    workout_counter += 1
+                    checked_checkboxes.append(checkbox)
 
-                    workout_session = WorkoutSession()
+            checkboxes.append(checked_checkboxes)
 
-                    workout_session.workout_number = workout_counter
-                    workout_session.day_number = i + 1
-                    workout_session.user_id = self.user_id
-
-                    muscle_group = str(checkbox.text())
-
-                    if muscle_group == "Biscep":
-                        muscle_group = "Bicep"
-
-                    workout_session.muscle_group = muscle_group
-
-                    exercises = self.exercise_dict[muscle_group]
-                    random_exercise = exercises[random.randint(0, len(exercises) - 1)]
-                    workout_session.exercise = random_exercise
-
-                    database.insert_workout_session(workout_session)
+            if len(checked_checkboxes) < 3:
+                self.label_CreateValidation.setText("Three muscle groups required for each day.")
+                return
 
             counter += 7
+
+        sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
+        database.update(sql_statement)
+        database.delete_workout(self.user_id)
+
+        for checked_list in checkboxes: # For each list of 3 for each day
+
+            for checked_checkbox in checked_list: # For each workout in checkbox list
+
+                workout_session = WorkoutSession()
+
+                workout_session.workout_number = checked_list.index(checked_checkbox) + 1
+                workout_session.day_number = checkboxes.index(checked_list) + 1
+                workout_session.user_id = self.user_id
+
+                muscle_group = str(checked_checkbox.text())
+
+                if muscle_group == "Biscep":
+                    muscle_group = "Bicep"
+
+                workout_session.muscle_group = muscle_group
+
+                exercises = self.exercise_dict[muscle_group]
+                random_exercise = exercises[random.randint(0, len(exercises) - 1)]
+                workout_session.exercise = random_exercise
+
+                database.insert_workout_session(workout_session)
 
         self.stackedWidget.setCurrentIndex(2)
         self.DisableCheckBoxes()
@@ -320,6 +333,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.stackedWidget.setCurrentIndex(2)
 
     def openCreate(self):
+        self.label_CreateValidation.setText("")
         self.stackedWidget.setCurrentIndex(3)
     def openProgress(self):
         sql_statement = "select * from User where User_Id = %d" %self.user_id
