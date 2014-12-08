@@ -10,7 +10,7 @@ class WorkoutSession(object):
         self.user_id = 1
         self.muscle_group = ""
         self.exercise = ""
-        self.set_one = 1
-        self.set_two = 1
-        self.set_three = 1
+        self.set_one = -1
+        self.set_two = -1
+        self.set_three = -1
         self.weight = 1
