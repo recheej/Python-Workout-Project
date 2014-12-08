@@ -103,6 +103,27 @@ def delete(sql_statement):
         return e
 
 
+def update(sql_statement):
+
+    db = db_instance()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(sql_statement)
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return True
+
+    except MySQLdb.Error as e:
+
+        cursor.close()
+        db.close()
+
+        print e
+        return e
 
 
 def insert_user(user):
@@ -114,26 +135,22 @@ def insert_user(user):
     return insert(sql_statement)
 
 
-def insert_workout(workout_info):
-
-    sql_statement = "insert into Workout_Info (User_ID, Muscle_Group, Exercise, Day) " + \
-        "values (%d, '%s', '%s', %d)" % (workout_info.user_id,
-        workout_info.muscle_group, workout_info.exercise, workout_info.day)
-
-    return insert(sql_statement)
-
-
 def delete_workout(user_id):
 
-    sql_statement = "delete from Workout_Info where User_ID = %d" % (user_id)
+    sql_statement = "delete from Workout_Session where User_ID = %d" % (user_id)
 
     return delete(sql_statement)
 
 
-def get_workouts(user_id, week_number, day_number):
+def get_current_workouts(user_id):
 
-    sql_statement = "select * from Workout_Session where User_ID = %d and Week_Number = %d and Day_Number = %d" %(user_id,
-        week_number, day_number)
+    results = get_count(user_id)
+
+    count = results[0][0]
+
+    week_number = ((count -1) / 3) + 1
+
+    sql_statement = "SELECT * from Workout_Session Where User_ID = %d and Week_Number = %d and Day_Number = %d" % (user_id, week_number, count)
 
     workouts = select(sql_statement)
 
@@ -152,6 +169,7 @@ def get_workouts(user_id, week_number, day_number):
         workout_session.set_one = int(workout[6])
         workout_session.set_two = int(workout[7])
         workout_session.set_three = int(workout[8])
+        workout_session.weight = int(workout[9])
 
         workout_sessions.append(workout_session)
 
@@ -166,3 +184,49 @@ def insert_workout_session(workout_session):
         workout_session.exercise, workout_session.set_one, workout_session.set_two, workout_session.set_three, workout_session.weight)
 
     return insert(sql_statement)
+
+
+def get_count(user_id):
+
+    sql_statement = "SELECT Count from User WHERE User_ID = %d" % user_id
+
+    return select(sql_statement)
+
+
+def update_count(user_id):
+
+     results = get_count(user_id)
+
+     count = results[0][0]
+     count += 1
+
+     sql_statement = "UPDATE User SET Count = %d WHERE User_ID = %d" % (count, user_id)
+
+     return update(sql_statement)
+
+    
+def get_stat_info(user_id):
+    sql_statement = "select * from Workout_Session where User_ID = %d" %user_id
+    
+    workouts = select(sql_statement)
+
+    workout_sessions = []
+
+    for workout in workouts:
+
+        workout_session = WorkoutSession()
+
+        workout_session.workout_number = int(workout[0])
+        workout_session.week_number = int(workout[1])
+        workout_session.day_number = int(workout[2])
+        workout_session.user_id = int(workout[3])
+        workout_session.muscle_group = workout[4]
+        workout_session.exercise = workout[5]
+        workout_session.set_one = int(workout[6])
+        workout_session.set_two = int(workout[7])
+        workout_session.set_three = int(workout[8])
+        workout_session.weight = int(workout[9])
+
+        workout_sessions.append(workout_session)
+
+    return workout_sessions

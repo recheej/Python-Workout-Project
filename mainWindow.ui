@@ -22,7 +22,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="LoginWindow">
        <widget class="QLabel" name="label_3">
@@ -691,6 +691,19 @@
          <string>Cancel</string>
         </property>
        </widget>
+       <widget class="QLabel" name="label_CreateValidation">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>450</y>
+          <width>311</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="page">
        <widget class="QTabWidget" name="tabWidget">
@@ -706,7 +719,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -871,7 +884,7 @@
            <rect>
             <x>270</x>
             <y>450</y>
-            <width>201</width>
+            <width>441</width>
             <height>21</height>
            </rect>
           </property>
@@ -885,6 +898,19 @@
           </property>
           <property name="text">
            <string>TextLabel</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tab1Val">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>360</y>
+            <width>191</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </widget>
@@ -1045,7 +1071,7 @@
            <rect>
             <x>270</x>
             <y>450</y>
-            <width>201</width>
+            <width>411</width>
             <height>21</height>
            </rect>
           </property>
@@ -1059,6 +1085,19 @@
           </property>
           <property name="text">
            <string>TextLabel</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tab2Val">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>350</y>
+            <width>191</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </widget>
@@ -1219,7 +1258,7 @@
            <rect>
             <x>270</x>
             <y>450</y>
-            <width>331</width>
+            <width>431</width>
             <height>21</height>
            </rect>
           </property>
@@ -1233,6 +1272,19 @@
           </property>
           <property name="text">
            <string>TextLabel</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tab3Val">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>350</y>
+            <width>191</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </widget>
@@ -1276,10 +1328,10 @@
        <widget class="QProgressBar" name="progressBar">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>210</y>
-          <width>118</width>
-          <height>23</height>
+          <x>330</x>
+          <y>180</y>
+          <width>221</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="value">
@@ -1298,6 +1350,55 @@
         <property name="text">
          <string>Back</string>
         </property>
+       </widget>
+       <widget class="QLabel" name="label_28">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>160</y>
+          <width>251</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>25</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Workout Progress:</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>250</y>
+          <width>421</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <column>
+         <property name="text">
+          <string>Workout Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Start Weight</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Current Weight</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Average Reps</string>
+         </property>
+        </column>
        </widget>
       </widget>
      </widget>

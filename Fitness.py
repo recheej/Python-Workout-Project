@@ -31,9 +31,9 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.pushButtonStart.clicked.connect(self.openStart)
         self.pushButtonSubmit.clicked.connect(self.create_plan_clicked)
         self.pushButtonCreateCancel.clicked.connect(self.backToMain)
-        self.pushButtonSave1.clicked.connect(self.nextTab)
-        self.pushButtonSave2.clicked.connect(self.nextTab)
-        self.pushButtonSave3.clicked.connect(self.nextTab)
+        self.pushButtonSave1.clicked.connect(self.saveProgress)
+        self.pushButtonSave2.clicked.connect(self.saveProgress)
+        self.pushButtonSave3.clicked.connect(self.saveProgress)
         self.pushButtonStatsBack.clicked.connect(self.backToMain)
         self.exercise_dict = {'Chest': ['Incline Bench Press (Barbell)', 'Flat Bench Press (Barbell)'],
          'Back':['Lat Pull Down', 'Seated Cable Row'],
@@ -42,8 +42,98 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          'Legs':['Squats', 'Leg Press'],
          'Core(abs)':['Heel Touches', 'Leg Raises'],
          'Shoulders':['Military Press (Dumbbell)', 'Rear Deltoid Flyes']}
-        
 
+        self.checkBoxList1 = [self.checkBoxChest,
+            self.checkBoxBack,
+            self.checkBoxBiscep,
+            self.checkTricep,
+            self.checkBoxLegs,
+            self.checkBoxCore,
+            self.checkBoxShoulders
+            ]
+
+        #Check Box List for Column 2/Day 2
+        self.checkBoxList2 = [self.checkBoxChest_2,
+                self.checkBoxBack_2,
+                self.checkTricep_2,
+                self.checkBoxBiscep_2,
+                self.checkBoxLegs_2,
+                self.checkBoxCore_2,
+                self.checkBoxShoulders_2
+                ]
+
+        #Check Box List for Column 3/ Day 3
+        self.checkBoxList3 = [self.checkBoxChest_3,
+                self.checkBoxBack_3,
+                self.checkBoxBiscep_3,
+                self.checkTricep_3,
+                self.checkBoxLegs_3,
+                self.checkBoxCore_3,
+                self.checkBoxShoulders_3
+                ]
+        #Loop through check list 1 for clicks
+        for item in self.checkBoxList1:
+            item.clicked.connect(self.LimitCheckNumber)
+
+        #Loop through check list 2 for clicks
+        for item in self.checkBoxList2:
+            item.clicked.connect(self.LimitCheckNumber)
+
+        #Loop through check list 3 for clicks
+        for item in self.checkBoxList3:
+            item.clicked.connect(self.LimitCheckNumber)            
+
+        #initialize counters 1-3 for amount of check boxes checked    
+        self.checkCounter1 = 0
+        self.checkCounter2 = 0
+        self.checkCounter3 = 0
+        
+     #LimitCheckNumber checks number of boxes checked and disables and enables as necessary
+    def LimitCheckNumber(self):
+        #Check Box List 1
+        for item in self.checkBoxList1:
+            if item.isChecked():
+                self.checkCounter1 += 1   
+        if self.checkCounter1 == 3:
+            for item in self.checkBoxList1:
+                if item.isChecked() == False:
+                    item.setEnabled(False)
+        if self.checkCounter1 < 3:
+            for item in self.checkBoxList1:
+                if item.isChecked() == False:
+                    item.setEnabled(True)
+        self.checkCounter1 = 0
+
+
+        #Check Box List 2
+        for item in self.checkBoxList2:
+            if item.isChecked():
+                self.checkCounter2 += 1   
+        if self.checkCounter2 == 3:
+            for item in self.checkBoxList2:
+                if item.isChecked() == False:
+                    item.setEnabled(False)
+        if self.checkCounter2 < 3:
+            for item in self.checkBoxList2:
+                if item.isChecked() == False:
+                    item.setEnabled(True)
+        self.checkCounter2 = 0
+
+
+        #Check Box List 3
+        for item in self.checkBoxList3:
+            if item.isChecked():
+                self.checkCounter3 += 1   
+        if self.checkCounter3 == 3:
+            for item in self.checkBoxList3:
+                if item.isChecked() == False:
+                    item.setEnabled(False)
+        if self.checkCounter3 < 3:
+            for item in self.checkBoxList3:
+                if item.isChecked() == False:
+                    item.setEnabled(True)
+        self.checkCounter3 = 0
+        
     def backToLogin(self):
         self.stackedWidget.setCurrentIndex(0)
        
@@ -180,26 +270,13 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          self.checkBoxShoulders_2.setEnabled(True)
          self.checkBoxShoulders_3.setEnabled(True)
          
-    def create_workout(self, d, g):
-
-        new_workout = WorkoutInfo()
-        new_workout.user_id = self.user_id
-        new_workout.day = d
-        new_workout.muscle_group = g
-        new_workout.exercise = self.exercise_dict[g][random.randint(0, len(self.exercise_dict[g])-1)]
-        new_workout.sets = 3
-        new_workout.reps = 1
-        new_workout.goal_sets = 3
-        new_workout.goal_reps = 1
-        new_workout.weights = 1
-
-        database.insert_workout(new_workout)
-         
     def create_plan_clicked(self):
 
-        workouts = database.get_workouts(self.user_id, 1, 1)
-
+        sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
+        database.update(sql_statement)
+        database.delete_workout(self.user_id)
         checkboxes = self.findChildren(QtGui.QCheckBox)
+        checkboxes.reverse()
 
         counter = 0
         for i in range(0, 3):
@@ -220,10 +297,14 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                     workout_session.user_id = self.user_id
 
                     muscle_group = str(checkbox.text())
+
+                    if muscle_group == "Biscep":
+                        muscle_group = "Bicep"
+
                     workout_session.muscle_group = muscle_group
 
                     exercises = self.exercise_dict[muscle_group]
-                    random_exercise = exercises[random.randint(0, len(exercises))]
+                    random_exercise = exercises[random.randint(0, len(exercises) - 1)]
                     workout_session.exercise = random_exercise
 
                     database.insert_workout_session(workout_session)
@@ -241,32 +322,162 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
     def openCreate(self):
         self.stackedWidget.setCurrentIndex(3)
     def openProgress(self):
+        sql_statement = "select * from User where User_Id = %d" %self.user_id
+
+        results = database.select(sql_statement)
+        
+        info = database.get_stat_info(self.user_id)
+
+        self.progressBar.setValue((results[0][8] / 18) * 100)
+       
+        workoutlist = []
+        count = 1
+        for workout in info:
+            count = False
+            if workoutlist:
+                              
+                for item in workoutlist:
+                    
+                    if item[0].exercise == workout.exercise:
+                        count = True
+                        item.append(workout)
+                        break
+                if count:
+                    pass
+                else:
+                    exercise1 = []
+                    exercise1.append(workout)
+                    workoutlist.append(exercise1)
+            else:
+                exercise = []
+                exercise.append(workout)
+                workoutlist.append(exercise)
+        
+        
+        self.tableWidget.setRowCount(len(workoutlist))
+        self.tableWidget.setColumnCount(4)
+        for item in range(len(workoutlist)):
+            
+            itemName = QtGui.QTableWidgetItem(workoutlist[item][0].exercise)
+            self.tableWidget.setItem(item,0, itemName)
+            max1 = min1 = workoutlist[item][0].weight
+            reps = 0
+            size = len(workoutlist[item])
+            for work in workoutlist[item]:
+                if work.weight < min1:
+                    min1 = work.weight
+                if max1 < work.weight:
+                    max1 = work.weight
+                reps += work.set_one
+                reps += work.set_two
+                reps += work.set_three
+            finalReps = reps/(3*size)
+            
+            itemStartName = QtGui.QTableWidgetItem(str(min1))
+            self.tableWidget.setItem(item,1, itemStartName)
+            
+            itemEndName = QtGui.QTableWidgetItem(str(max1))
+            self.tableWidget.setItem(item,2, itemEndName)
+
+            itemRepsName = QtGui.QTableWidgetItem(str(finalReps))
+            self.tableWidget.setItem(item,3, itemRepsName)
+        
         self.stackedWidget.setCurrentIndex(5)
     def openStart(self):
-        self.stackedWidget.setCurrentIndex(4)
         self.createStartPage()
+        self.stackedWidget.setCurrentIndex(4)
+        
 
     def createStartPage(self):
-        sql_statement = "select * from User where User_Id = %s" %self.user_id
-        results = database.select(sql_statement)
-        if len(results) == 0:
-            print 'none'
-        day = results[0][8]
-        actualDay = (day%3)+1
+        workout_sessions = database.get_current_workouts(self.user_id)
 
-        sql_statement_2 = "select * from Workout_Info where User_Id = %s and Day = %d" %(self.user_id, actualDay)
-        results_2 = database.select(sql_statement_2)
-
-        self.Picture_3.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[2][3] + '.jpg'))
-        self.labelWorkout3.setText(results_2[2][3])
-        self.Picture_2.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[1][3] + '.jpg'))
-        self.labelWorkout2.setText(results_2[1][3])
-        self.Picture.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[0][3]+ '.jpg'))
-        self.labelWorkout1.setText(results_2[0][3])
+        self.Picture_3.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[2].exercise + '.jpg'))
+        self.labelWorkout3.setText(workout_sessions[2].exercise)
+        self.Picture_2.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[1].exercise + '.jpg'))
+        self.labelWorkout2.setText(workout_sessions[1].exercise)
+        self.Picture.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[0].exercise + '.jpg'))
+        self.labelWorkout1.setText(workout_sessions[0].exercise)
         
     def nextTab(self):
         if self.tabWidget.currentIndex() == 2:
             self.stackedWidget.setCurrentIndex(2)
             self.tabWidget.setCurrentIndex(0)
+
+            database.update_count(self.user_id)
+            count_results = database.get_count(self.user_id)
+            count = count_results[0][0]
+            if count % 3 == 1:
+                for i in range(0, 3):
+
+                    workout_counter = 0
+                    for j in range (0,3):
+
+                        workout_counter += 1
+
+                        workout_session = WorkoutSession()
+
+                        workout_session.workout_number = workout_counter
+                        workout_session.day_number = count + i
+                        workout_session.week_number = ((count - 1) / 3) + 1
+                        workout_session.user_id = self.user_id
+
+                        sql_statement = "SELECT Muscle_Group, Exercise from Workout_Session WHERE User_ID = %d AND Week_Number = 1 AND Workout_Number = %d AND Day_Number = %d" % \
+                                       (self.user_id, workout_session.workout_number, i + 1)
+                        results = database.select(sql_statement)
+
+                        workout_session.muscle_group = results[0][0]
+                        workout_session.exercise = results[0][1]
+                        database.insert_workout_session(workout_session)
+
         else:
             self.tabWidget.setCurrentIndex(self.tabWidget.currentIndex()+1)
+    def saveProgress(self):
+
+        workout_sessions = database.get_current_workouts(self.user_id)
+        weight = -1
+        set1 = -1
+        set2 = -1
+        set3 = -1
+        week = -1
+        day = -1
+        workout_number = -1
+
+        if self.tabWidget.currentIndex() == 0:
+
+            week = workout_sessions[0].week_number
+            day = workout_sessions[0].day_number
+            workout_number = 1
+
+            weight = self.lineEditWeight_2.text()
+            set1 = self.lineEditSet1.text()
+            set2 = self.lineEditSet2.text()
+            set3 = self.lineEditSet3.text()
+
+        if self.tabWidget.currentIndex() == 1:
+
+            week = workout_sessions[1].week_number
+            day = workout_sessions[1].day_number
+            workout_number = 2
+
+            weight = self.lineEditWeight_3.text()
+            set1 = self.lineEditSet1_2.text()
+            set2 = self.lineEditSet2_2.text()
+            set3 = self.lineEditSet3_2.text()
+
+        if self.tabWidget.currentIndex() == 2:
+
+            week = workout_sessions[2].week_number
+            day = workout_sessions[2].day_number
+            workout_number = 3
+
+            weight = self.lineEditWeight_4.text()
+            set1 = self.lineEditSet1_3.text()
+            set2 = self.lineEditSet2_3.text()
+            set3 = self.lineEditSet3_3.text()
+
+        sql_statement = "UPDATE Workout_Session SET Weight = %d, Set_1 = %d, Set_2 = %d, Set_3 = %d WHERE Workout_Number = %d and Week_Number = %d and Day_Number = %d and User_ID = %d" % \
+                        (int(weight), int(set1), int(set2), int(set3), workout_number, week, day, self.user_id)
+
+        completed = database.update(sql_statement)
+
+        self.nextTab()
