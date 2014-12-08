@@ -1,3 +1,8 @@
+#Group:
+#       Rechee Jozil
+#       James Mark
+#       Long Huynh
+#       Jack Vasquez
 from PyQt4 import QtGui
 import Fitness
 

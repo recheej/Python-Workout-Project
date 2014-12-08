@@ -1,4 +1,8 @@
-__author__ = 'reche_000'
+#Group:
+#       Rechee Jozil
+#       James Mark
+#       Long Huynh
+#       Jack Vasquez
 from user import User
 
 import MySQLdb
@@ -102,7 +106,6 @@ def delete(sql_statement):
         print e
         return e
 
-
 def update(sql_statement):
 
     db = db_instance()
@@ -192,7 +195,6 @@ def get_count(user_id):
 
     return select(sql_statement)
 
-
 def update_count(user_id):
 
      results = get_count(user_id)
@@ -203,7 +205,6 @@ def update_count(user_id):
      sql_statement = "UPDATE User SET Count = %d WHERE User_ID = %d" % (count, user_id)
 
      return update(sql_statement)
-
     
 def get_stat_info(user_id):
     sql_statement = "select * from Workout_Session where User_ID = %d" %user_id
@@ -211,6 +212,7 @@ def get_stat_info(user_id):
     workouts = select(sql_statement)
 
     workout_sessions = []
+    
 
     for workout in workouts:
 

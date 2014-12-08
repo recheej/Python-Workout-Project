@@ -1,7 +1,11 @@
+#Group:
+#       Rechee Jozil
+#       James Mark
+#       Long Huynh
+#       Jack Vasquez
 from FitnessUI import Ui_PyFitness
 from PyQt4 import QtCore, QtGui
 from user import User
-from workout_info import WorkoutInfo
 from workout_session import WorkoutSession
 import os,sys
 import database
@@ -35,6 +39,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.pushButtonSave2.clicked.connect(self.saveProgress)
         self.pushButtonSave3.clicked.connect(self.saveProgress)
         self.pushButtonStatsBack.clicked.connect(self.backToMain)
+        self.saveProgressValid = [False,False,False]
         self.exercise_dict = {'Chest': ['Incline Bench Press (Barbell)', 'Flat Bench Press (Barbell)'],
          'Back':['Lat Pull Down', 'Seated Cable Row'],
          'Bicep':['Hammer Curls', 'Preacher Curl'],
@@ -244,8 +249,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          self.checkBoxShoulders_2.setCheckState(QtCore.Qt.Unchecked)
          self.checkBoxShoulders_3.setCheckState(QtCore.Qt.Unchecked)
          self.radioButtonPlan.setChecked(False)
-
-
+   
     def EnableCheckBoxes(self):
          self.checkBoxChest.setEnabled(True)
          self.checkBoxChest_2.setEnabled(True)
@@ -270,62 +274,61 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          self.checkBoxShoulders_3.setEnabled(True)
          
     def create_plan_clicked(self):
+         all_checkboxes = self.findChildren(QtGui.QCheckBox)
+         all_checkboxes.reverse()
 
-        all_checkboxes = self.findChildren(QtGui.QCheckBox)
-        all_checkboxes.reverse()
-
-        checkboxes = []
-        counter = 0
+         checkboxes = []
+         counter = 0
 
         #Go through and make sure there are 3 checked boxes for each day
-        for i in range(0, 3):
+         for i in range(0, 3):
 
-            day_checkboxes = all_checkboxes[counter: counter + 7]
+             day_checkboxes = all_checkboxes[counter: counter + 7]
 
-            checked_checkboxes = []
-            for checkbox in day_checkboxes:
+             checked_checkboxes = []
+             for checkbox in day_checkboxes:
 
-                if checkbox.isChecked():
+                 if checkbox.isChecked():
 
-                    checked_checkboxes.append(checkbox)
+                     checked_checkboxes.append(checkbox)
 
-            checkboxes.append(checked_checkboxes)
+             checkboxes.append(checked_checkboxes)
 
-            if len(checked_checkboxes) < 3:
-                self.label_CreateValidation.setText("Three muscle groups required for each day.")
-                return
+             if len(checked_checkboxes) < 3:
+                 self.label_CreateValidation.setText("Three muscle groups required for each day.")
+                 return
 
-            counter += 7
+             counter += 7
 
-        sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
-        database.update(sql_statement)
-        database.delete_workout(self.user_id)
+         sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
+         database.update(sql_statement)
+         database.delete_workout(self.user_id)
 
-        for checked_list in checkboxes: # For each list of 3 for each day
+         for checked_list in checkboxes: # For each list of 3 for each day
 
-            for checked_checkbox in checked_list: # For each workout in checkbox list
+             for checked_checkbox in checked_list: # For each workout in checkbox list
 
-                workout_session = WorkoutSession()
+                 workout_session = WorkoutSession()
 
-                workout_session.workout_number = checked_list.index(checked_checkbox) + 1
-                workout_session.day_number = checkboxes.index(checked_list) + 1
-                workout_session.user_id = self.user_id
+                 workout_session.workout_number = checked_list.index(checked_checkbox) + 1
+                 workout_session.day_number = checkboxes.index(checked_list) + 1
+                 workout_session.user_id = self.user_id
 
-                muscle_group = str(checked_checkbox.text())
+                 muscle_group = str(checked_checkbox.text())
 
-                if muscle_group == "Biscep":
-                    muscle_group = "Bicep"
+                 if muscle_group == "Biscep":
+                     muscle_group = "Bicep"
 
-                workout_session.muscle_group = muscle_group
+                 workout_session.muscle_group = muscle_group
 
-                exercises = self.exercise_dict[muscle_group]
-                random_exercise = exercises[random.randint(0, len(exercises) - 1)]
-                workout_session.exercise = random_exercise
+                 exercises = self.exercise_dict[muscle_group]
+                 random_exercise = exercises[random.randint(0, len(exercises) - 1)]
+                 workout_session.exercise = random_exercise
 
-                database.insert_workout_session(workout_session)
+                 database.insert_workout_session(workout_session)
 
-        self.stackedWidget.setCurrentIndex(2)
-        self.DisableCheckBoxes()
+         self.stackedWidget.setCurrentIndex(2)
+         self.DisableCheckBoxes()
             
     def backToMain(self):
         if (self.stackedWidget.currentIndex() == 3):
@@ -341,8 +344,9 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         results = database.select(sql_statement)
         
         info = database.get_stat_info(self.user_id)
-
-        self.progressBar.setValue((results[0][8] / 18) * 100)
+        
+        day = float(results[0][8])
+        self.progressBar.setValue((day / 18) * 100)
        
         workoutlist = []
         count = 1
@@ -372,12 +376,20 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.tableWidget.setColumnCount(4)
         for item in range(len(workoutlist)):
             
+            validate = True
+            for work in workoutlist[item]:
+                if work.weight != 1:
+                    validate = False
+            if validate:
+                continue
             itemName = QtGui.QTableWidgetItem(workoutlist[item][0].exercise)
             self.tableWidget.setItem(item,0, itemName)
             max1 = min1 = workoutlist[item][0].weight
             reps = 0
-            size = len(workoutlist[item])
+            size = 0
             for work in workoutlist[item]:
+                if work.weight == 1:
+                    continue
                 if work.weight < min1:
                     min1 = work.weight
                 if max1 < work.weight:
@@ -385,6 +397,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                 reps += work.set_one
                 reps += work.set_two
                 reps += work.set_three
+                size += 1
             finalReps = reps/(3*size)
             
             itemStartName = QtGui.QTableWidgetItem(str(min1))
@@ -395,25 +408,34 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
 
             itemRepsName = QtGui.QTableWidgetItem(str(finalReps))
             self.tableWidget.setItem(item,3, itemRepsName)
-        
+
+        self.tableWidget.resizeColumnsToContents()
         self.stackedWidget.setCurrentIndex(5)
     def openStart(self):
-        self.createStartPage()
+        if self.createStartPage() == 0:
+            return
+        for lineEdit in self.findChildren(QtGui.QLineEdit):
+                lineEdit.setText("")
+        self.saveProgressValid = [False] * 3
+
         self.stackedWidget.setCurrentIndex(4)
-        
+
 
     def createStartPage(self):
         workout_sessions = database.get_current_workouts(self.user_id)
+        if len(workout_sessions) == 0:
+            return 0
 
         self.Picture_3.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[2].exercise + '.jpg'))
-        self.labelWorkout3.setText(workout_sessions[2].exercise)
+        self.labelWorkoutName_3.setText(workout_sessions[2].exercise)
         self.Picture_2.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[1].exercise + '.jpg'))
-        self.labelWorkout2.setText(workout_sessions[1].exercise)
+        self.labelWorkoutName_2.setText(workout_sessions[1].exercise)
         self.Picture.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[0].exercise + '.jpg'))
-        self.labelWorkout1.setText(workout_sessions[0].exercise)
+        self.labelWorkoutName.setText(workout_sessions[0].exercise)
         
     def nextTab(self):
-        if self.tabWidget.currentIndex() == 2:
+        self.saveProgressValid[self.tabWidget.currentIndex()] = True
+        if self.saveProgressValid[0]is True and self.saveProgressValid[1] is True and self.saveProgressValid[2]is True:
             self.stackedWidget.setCurrentIndex(2)
             self.tabWidget.setCurrentIndex(0)
 
@@ -443,7 +465,7 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
                         workout_session.exercise = results[0][1]
                         database.insert_workout_session(workout_session)
 
-        else:
+        elif self.tabWidget.currentIndex() is not 2:
             self.tabWidget.setCurrentIndex(self.tabWidget.currentIndex()+1)
     def saveProgress(self):
 
@@ -494,4 +516,4 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
 
         completed = database.update(sql_statement)
 
-        self.nextTab()
+        self.nextTab() 

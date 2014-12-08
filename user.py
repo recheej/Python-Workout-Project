@@ -1,5 +1,8 @@
-__author__ = 'Rechee Jozil'
-
+#Group:
+#       Rechee Jozil
+#       James Mark
+#       Long Huynh
+#       Jack Vasquez
 
 class User(object):
     #Represents the user table from database
