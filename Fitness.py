@@ -31,9 +31,9 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.pushButtonStart.clicked.connect(self.openStart)
         self.pushButtonSubmit.clicked.connect(self.create_plan_clicked)
         self.pushButtonCreateCancel.clicked.connect(self.backToMain)
-        self.pushButtonSave1.clicked.connect(self.nextTab)
-        self.pushButtonSave2.clicked.connect(self.nextTab)
-        self.pushButtonSave3.clicked.connect(self.nextTab)
+        self.pushButtonSave1.clicked.connect(self.saveProgress)
+        self.pushButtonSave2.clicked.connect(self.saveProgress)
+        self.pushButtonSave3.clicked.connect(self.saveProgress)
         self.pushButtonStatsBack.clicked.connect(self.backToMain)
         self.exercise_dict = {'Chest': ['Incline Bench Press (Barbell)', 'Flat Bench Press (Barbell)'],
          'Back':['Lat Pull Down', 'Seated Cable Row'],
@@ -197,8 +197,9 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
          
     def create_plan_clicked(self):
 
-        workouts = database.get_workouts(self.user_id, 1, 1)
-
+        sql_statement = "UPDATE User SET Count = 1 Where User_ID = %d" % self.user_id
+        database.update(sql_statement)
+        database.delete_workout(self.user_id)
         checkboxes = self.findChildren(QtGui.QCheckBox)
         checkboxes.reverse()
 
@@ -252,26 +253,97 @@ class FitnessApp(QtGui.QMainWindow, Ui_PyFitness):
         self.createStartPage()
 
     def createStartPage(self):
-        sql_statement = "select * from User where User_Id = %s" %self.user_id
-        results = database.select(sql_statement)
-        if len(results) == 0:
-            print 'none'
-        day = results[0][8]
-        actualDay = (day%3)+1
 
-        sql_statement_2 = "select * from Workout_Info where User_Id = %s and Day = %d" %(self.user_id, actualDay)
-        results_2 = database.select(sql_statement_2)
+        workout_sessions = database.get_current_workouts(self.user_id)
 
-        self.Picture_3.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[2][3] + '.jpg'))
-        self.labelWorkout3.setText(results_2[2][3])
-        self.Picture_2.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[1][3] + '.jpg'))
-        self.labelWorkout2.setText(results_2[1][3])
-        self.Picture.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + results_2[0][3]+ '.jpg'))
-        self.labelWorkout1.setText(results_2[0][3])
+        self.Picture_3.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[2].exercise + '.jpg'))
+        self.labelWorkout3.setText(workout_sessions[2].exercise)
+        self.Picture_2.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[1].exercise + '.jpg'))
+        self.labelWorkout2.setText(workout_sessions[1].exercise)
+        self.Picture.setPixmap(QtGui.QPixmap(os.getcwd() + '\\' + workout_sessions[0].exercise + '.jpg'))
+        self.labelWorkout1.setText(workout_sessions[0].exercise)
         
     def nextTab(self):
         if self.tabWidget.currentIndex() == 2:
             self.stackedWidget.setCurrentIndex(2)
             self.tabWidget.setCurrentIndex(0)
+
+            database.update_count(self.user_id)
+            count_results = database.get_count(self.user_id)
+            count = count_results[0][0]
+            if count % 3 == 1:
+                for i in range(0, 3):
+
+                    workout_counter = 0
+                    for j in range (0,3):
+
+                        workout_counter += 1
+
+                        workout_session = WorkoutSession()
+
+                        workout_session.workout_number = workout_counter
+                        workout_session.day_number = count + i
+                        workout_session.week_number = ((count - 1) / 3) + 1
+                        workout_session.user_id = self.user_id
+
+                        sql_statement = "SELECT Muscle_Group, Exercise from Workout_Session WHERE User_ID = %d AND Week_Number = 1 AND Workout_Number = %d AND Day_Number = %d" % \
+                                       (self.user_id, workout_session.workout_number, i + 1)
+                        results = database.select(sql_statement)
+
+                        workout_session.muscle_group = results[0][0]
+                        workout_session.exercise = results[0][1]
+                        database.insert_workout_session(workout_session)
+
         else:
             self.tabWidget.setCurrentIndex(self.tabWidget.currentIndex()+1)
+
+    def saveProgress(self):
+
+        workout_sessions = database.get_current_workouts(self.user_id)
+        weight = -1
+        set1 = -1
+        set2 = -1
+        set3 = -1
+        week = -1
+        day = -1
+        workout_number = -1
+
+        if self.tabWidget.currentIndex() == 0:
+
+            week = workout_sessions[0].week_number
+            day = workout_sessions[0].day_number
+            workout_number = 1
+
+            weight = self.lineEditWeight_2.text()
+            set1 = self.lineEditSet1.text()
+            set2 = self.lineEditSet2.text()
+            set3 = self.lineEditSet3.text()
+
+        if self.tabWidget.currentIndex() == 1:
+
+            week = workout_sessions[1].week_number
+            day = workout_sessions[1].day_number
+            workout_number = 2
+
+            weight = self.lineEditWeight_3.text()
+            set1 = self.lineEditSet1_2.text()
+            set2 = self.lineEditSet2_2.text()
+            set3 = self.lineEditSet3_2.text()
+
+        if self.tabWidget.currentIndex() == 2:
+
+            week = workout_sessions[2].week_number
+            day = workout_sessions[2].day_number
+            workout_number = 3
+
+            weight = self.lineEditWeight_4.text()
+            set1 = self.lineEditSet1_3.text()
+            set2 = self.lineEditSet2_3.text()
+            set3 = self.lineEditSet3_3.text()
+
+        sql_statement = "UPDATE Workout_Session SET Weight = %d, Set_1 = %d, Set_2 = %d, Set_3 = %d WHERE Workout_Number = %d and Week_Number = %d and Day_Number = %d and User_ID = %d" % \
+                        (int(weight), int(set1), int(set2), int(set3), workout_number, week, day, self.user_id)
+
+        completed = database.update(sql_statement)
+
+        self.nextTab()
