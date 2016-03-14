@@ -11,10 +11,10 @@ from workout_session import WorkoutSession
 
 def db_instance():
 
-    host_name = "recheejinstance.cx1ynpvooriw.us-west-2.rds.amazonaws.com"
+    host_name = "recheejinstance."
     user_name = "recheej"
-    password = "usf_dev1992"
-    db_name = "WorkoutDB"
+    password = ""
+    db_name = ""
 
     db = MySQLdb.connect(host_name, user_name, password, db_name)
 
